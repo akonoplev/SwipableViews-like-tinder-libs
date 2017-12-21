@@ -8,7 +8,6 @@
 
 import UIKit
 
-
 enum swipeDirection {
     case left
     case right
@@ -39,6 +38,7 @@ class SwipableViews: UIView {
     var visibleViews = NSArray()
     var visibleIndex = 0
     var modelsCount = 0
+    var visibleReuseCardIndex = 0
     
     func registerNib ( nib : UINib )
     {
@@ -93,18 +93,18 @@ class SwipableViews: UIView {
         
         for _ in 0..<number
         {
-            print(indexCounter)
             let rawView = nib!.instantiate(withOwner: nil, options: nil)[0] as! UIView
             dataSource!.view(view: rawView, atIndex: indexCounter)
             
             rawView.frame = bounds
             insertSubview(rawView, at: 0)
-            
             viewsArray.add(rawView)
             indexCounter += 1
         }
         
-        visibleViews = viewsArray
+        visibleViews = viewsArray.count > 0 ?  viewsArray : visibleViews
+        
+        
         addRecognizers()
     }
     
@@ -166,8 +166,9 @@ extension SwipableViews
                 
             }
         }
-        
     }
+    
+    
     
     private func handleAction ( direction : swipeDirection , view : UIView )
     {
@@ -176,16 +177,35 @@ extension SwipableViews
         
         if modelsCount - visibleIndex <= 3
         {
-            if visibleIndex < modelsCount - 1 {
+            if visibleIndex < modelsCount  {
                 visibleIndex += 1
                 return
             }
         }
+        visibleReuseCardIndex = visibleReuseCardIndex == 2 ? 0 : visibleReuseCardIndex + 1
         
         dataSource?.view(view: view, atIndex: visibleIndex + 3 )
         view.transform = CGAffineTransform.identity
         view.frame = bounds
         insertSubview(view, at: 0)
         visibleIndex += 1
+    }
+}
+
+extension SwipableViews {
+    func autoSwipe(direction: swipeDirection) {
+        
+        let view = (self.visibleViews[visibleReuseCardIndex] as! UIView)
+        let newCenter = direction == .left ? CGPoint(x: view.center.x - 500 , y: view.center.y) : CGPoint(x: view.center.x + 500 , y: view.center.y)
+        
+        UIView.animate(withDuration: 0.5, animations: {
+            view.center = newCenter
+            let centerDiff = view.center.x - self.bounds.width / 2
+            let rotator = self.bounds.width / 2 / 0.3
+            view.transform = CGAffineTransform(rotationAngle: centerDiff / rotator)
+        }) { (finished) in
+            self.handleAction(direction: direction, view: view)
+        }
+        
     }
 }

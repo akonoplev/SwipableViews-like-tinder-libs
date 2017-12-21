@@ -11,6 +11,7 @@ import UIKit
 class ExampleViewController: UIViewController {
 
     @IBOutlet weak var exampleSwipableView: SwipableViews!
+    @IBOutlet weak var directionLabel: UILabel!
     
     let viewNib = UINib(nibName: "SwipableView", bundle: nil)
     var dataArray = [1,2,3,4,5,6,7,8,9]
@@ -43,6 +44,19 @@ extension ExampleViewController: SwipableViewsDelegate, SwipableViewsDataSource 
             }
             exampleSwipableView.reloadData()
         }
+        directionLabel.text = direction == .left ? "В лево!" : "В право!"
     }
 }
+
+//MARK: use auto swipe
+extension ExampleViewController {
+    
+    @IBAction func swipeRight(_ sender: Any) {
+        exampleSwipableView.autoSwipe(direction: .right)
+    }
+    @IBAction func swipeLeft(_ sender: Any) {
+        exampleSwipableView.autoSwipe(direction: .left)
+    }
+}
+
 

@@ -19,20 +19,57 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rXi-x9-J1c" customClass="SwipableViews" customModule="swipableViewsLibs" customModuleProvider="target">
-                                <rect key="frame" x="100" y="70" width="175" height="347"/>
+                                <rect key="frame" x="112.5" y="258.5" width="150" height="150"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="150" id="7JM-SV-vuf"/>
+                                    <constraint firstAttribute="width" constant="150" id="jkQ-EF-U83"/>
+                                </constraints>
                             </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hwv-h5-gyp">
+                                <rect key="frame" x="166" y="60" width="42" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ify-Fz-XrH">
+                                <rect key="frame" x="40" y="587" width="100" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="OBx-3f-Wzx"/>
+                                    <constraint firstAttribute="height" constant="40" id="aXt-0M-dVP"/>
+                                </constraints>
+                                <state key="normal" title=" В лево"/>
+                                <connections>
+                                    <action selector="swipeLeft:" destination="BYZ-38-t0r" eventType="touchUpInside" id="YAq-SY-6fN"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3Ks-OP-Jy8">
+                                <rect key="frame" x="235" y="587" width="100" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="Ru2-fv-Tek"/>
+                                    <constraint firstAttribute="height" constant="40" id="gJS-D6-uSf"/>
+                                </constraints>
+                                <state key="normal" title="В право"/>
+                                <connections>
+                                    <action selector="swipeRight:" destination="BYZ-38-t0r" eventType="touchUpInside" id="tUc-Pd-N0L"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="rXi-x9-J1c" secondAttribute="bottom" constant="250" id="5QJ-BA-zQs"/>
-                            <constraint firstItem="rXi-x9-J1c" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="50" id="ZMH-R5-fpS"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="rXi-x9-J1c" secondAttribute="trailing" constant="100" id="g0n-Jm-Izh"/>
-                            <constraint firstItem="rXi-x9-J1c" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="100" id="lkC-8V-1xb"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="ify-Fz-XrH" secondAttribute="bottom" constant="40" id="8a9-gb-uIt"/>
+                            <constraint firstItem="rXi-x9-J1c" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="MpZ-7m-6Z7"/>
+                            <constraint firstItem="Hwv-h5-gyp" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="NRd-nI-HdQ"/>
+                            <constraint firstItem="Hwv-h5-gyp" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="40" id="Noa-7C-erQ"/>
+                            <constraint firstItem="rXi-x9-J1c" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="kJf-Ns-dky"/>
+                            <constraint firstItem="ify-Fz-XrH" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="40" id="ppi-Go-f3L"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="3Ks-OP-Jy8" secondAttribute="trailing" constant="40" id="v7O-rX-PIo"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="3Ks-OP-Jy8" secondAttribute="bottom" constant="40" id="vtK-0Z-TKQ"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="directionLabel" destination="Hwv-h5-gyp" id="0rL-rs-FnF"/>
                         <outlet property="exampleSwipableView" destination="rXi-x9-J1c" id="Oas-pW-0Ex"/>
                     </connections>
                 </viewController>
