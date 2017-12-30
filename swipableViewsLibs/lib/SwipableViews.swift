@@ -38,7 +38,8 @@ class SwipableViews: UIView {
     var visibleViews = NSArray()
     var visibleIndex = 0
     var modelsCount = 0
-    var visibleReuseCardIndex = 0
+    var visivleReuseCardIndex = 0
+    let operationQueue = OperationQueue()
     
     func registerNib ( nib : UINib )
     {
@@ -170,10 +171,11 @@ extension SwipableViews
     
     
     
-    private func handleAction ( direction : swipeDirection , view : UIView )
+    func handleAction ( direction : swipeDirection , view : UIView)
     {
         delegate?.willSwiped(direction: direction, index: visibleIndex)
         view.removeFromSuperview()
+        
         
         if modelsCount - visibleIndex <= 3
         {
@@ -182,7 +184,7 @@ extension SwipableViews
                 return
             }
         }
-        visibleReuseCardIndex = visibleReuseCardIndex == 2 ? 0 : visibleReuseCardIndex + 1
+        visivleReuseCardIndex = visivleReuseCardIndex == 2 ? 0 : visivleReuseCardIndex + 1
         
         dataSource?.view(view: view, atIndex: visibleIndex + 3 )
         view.transform = CGAffineTransform.identity
@@ -194,18 +196,59 @@ extension SwipableViews
 
 extension SwipableViews {
     func autoSwipe(direction: swipeDirection) {
+        operationQueue.maxConcurrentOperationCount = 1
         
-        let view = (self.visibleViews[visibleReuseCardIndex] as! UIView)
-        let newCenter = direction == .left ? CGPoint(x: view.center.x - 500 , y: view.center.y) : CGPoint(x: view.center.x + 500 , y: view.center.y)
-        
-        UIView.animate(withDuration: 0.5, animations: {
-            view.center = newCenter
-            let centerDiff = view.center.x - self.bounds.width / 2
-            let rotator = self.bounds.width / 2 / 0.3
-            view.transform = CGAffineTransform(rotationAngle: centerDiff / rotator)
-        }) { (finished) in
-            self.handleAction(direction: direction, view: view)
+        if operationQueue.operations.count > 1 {
+            operationQueue.cancelAllOperations()
         }
+        
+        let animateOperation = AutomaticSwipeOperation(direction: direction, superview: self) { }
+        operationQueue.addOperation(animateOperation)
+    }
+}
+
+
+class AutomaticSwipeOperation: Operation {
+    var direction: swipeDirection?
+    var superview: SwipableViews!
+    var success: () -> ()
+    var view: UIView!
+    
+    init(direction: swipeDirection, superview: SwipableViews, success: @escaping ()-> ()) {
+        self.success = success
+        super.init()
+        self.direction = direction
+        self.superview = superview
+        
+    }
+    
+    override func main() {
+        let semaphore = DispatchSemaphore(value: 0)
+        
+        DispatchQueue.main.async {
+            
+            self.view = self.superview.subviews.last
+            let newCenter = self.direction == .left ? CGPoint(x: self.view.center.x - 500 , y: self.view.center.y) : CGPoint(x: self.view.center.x + 500 , y: self.view.center.y)
+            
+            UIView.animate(withDuration: 0.5, animations: {
+                self.view.center = newCenter
+                let centerDiff = self.view.center.x - self.superview.bounds.width / 2
+                let rotator = self.superview.bounds.width / 2 / 0.3
+                self.view.transform = CGAffineTransform(rotationAngle: centerDiff / rotator)
+            }) { (finished) in
+                
+                if finished
+                {
+                    self.superview.handleAction(direction: self.direction!, view: self.view)
+                    self.success()
+                    semaphore.signal()
+                    
+                }
+            }
+        }
+        
+        
+        _ = semaphore.wait(timeout: .distantFuture)
         
     }
 }
